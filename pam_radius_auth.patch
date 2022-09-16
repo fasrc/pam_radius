@@ -1,27 +1,25 @@
---- pam_radius_auth.c	2007-03-26 05:36:13.000000000 -0400
-+++ pam_radius_auth.c.rc	2012-03-16 08:42:14.000000000 -0400
-@@ -1132,13 +1132,13 @@
-   request->id = request->vector[0]; /* this should be evenly distributed */
-   
-   /* grab the password (if any) from the previous authentication layer */
--  retval = pam_get_item(pamh, PAM_AUTHTOK, (CONST void **) &password);
-+ /* retval = pam_get_item(pamh, PAM_AUTHTOK, (CONST void **) &password);
-   PAM_FAIL_CHECK;
- 
-   if(password) {
-     password = strdup(password);
-     DPRINT(LOG_DEBUG, "Got password %s", password);
--  }
-+  }*/
- 
-   /* no previous password: maybe get one from the user */
-   if (!password) {
-@@ -1149,7 +1149,7 @@
-     
-     /* check to see if we send a NULL password the first time around */
-     if (!(ctrl & PAM_SKIP_PASSWD)) {
--      retval = rad_converse(pamh, PAM_PROMPT_ECHO_OFF, "Password: ", &password);
-+      retval = rad_converse(pamh, PAM_PROMPT_ECHO_OFF, "Verification code: ", &password);
-       PAM_FAIL_CHECK;
- 
-     }
+--- a/pam_radius_auth.c
++++ b/pam_radius_auth.c
+@@ -1232,11 +1232,11 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,CONST c
+      request->id = request->vector[0]; /* this should be evenly distributed */
+
+      /* grab the password (if any) from the previous authentication layer */
+-        if (!config.force_prompt) {
++        /*if (!config.force_prompt) {
+                 DPRINT(LOG_DEBUG, "ignore last_pass, force_prompt set");
+              retval = pam_get_item(pamh, PAM_AUTHTOK, (CONST void **) &password);
+              PAM_FAIL_CHECK;
+-        }
++        }*/
+
+      if (password) {
+              password = strdup(password);
+@@ -1252,7 +1252,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc,CONST c
+
+              /* check to see if we send a NULL password the first time around */
+              if (!(ctrl & PAM_SKIP_PASSWD)) {
+-                 retval = rad_converse(pamh, PAM_PROMPT_ECHO_OFF, config.prompt, &password);
++                 retval = rad_converse(pamh, PAM_PROMPT_ECHO_OFF, "Verification code: ", &password);
+                      PAM_FAIL_CHECK;
+
+              } else {
